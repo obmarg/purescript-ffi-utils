@@ -1,13 +1,23 @@
 'use strict';
 
-var Maybe = require('Data.Maybe');
+function handleMaybe(justAndNothing, arg) {
+  const justValue = justAndNothing[0],
+        nothingValue = justAndNothing[1];
 
-exports.mkError = function(e) {
+  return arg.constructor == justValue.constructor ? arg.value0 : (
+    arg.constructor == nothingValue.constructor ? null : arg
+  );
+}
+
+exports._mkError = function(justAndNothing, e) {
+  const justValue = justAndNothing[0],
+        nothingValue = justAndNothing[1];
+
   if (e instanceof Error) {
-    return new Maybe.Just(e);
+    return new justValue.constructor(e);
   }
   else {
-    return new Maybe.Nothing();
+    return new nothingValue.constructor();
   }
 }
 
@@ -23,62 +33,62 @@ exports.bind = function(f) {
   };
 };
 
-exports._call0 = function(obj, method) {
+exports._call0 = function(justAndNothing, obj, method) {
   return obj[method]();
 };
 
-exports._call1 = function(obj, method, arg1) {
-  return obj[method](arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1);
+exports._call1 = function(justAndNothing, obj, method, arg1) {
+  return obj[method](handleMaybe(justAndNothing, arg1));
 };
 
-exports._call2 = function(obj, method, arg1, arg2) {
-  return obj[method]( arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1
-                    , arg2 instanceof Maybe.Just ? arg2.value0 : arg2 instanceof Maybe.Nothing ? null : arg2
+exports._call2 = function(justAndNothing, obj, method, arg1, arg2) {
+  return obj[method]( handleMaybe(justAndNothing, arg1)
+                    , handleMaybe(justAndNothing, arg2)
                     );
 };
 
-exports._call3 = function(obj, method, arg1, arg2, arg3) {
-  return obj[method]( arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1
-                    , arg2 instanceof Maybe.Just ? arg2.value0 : arg2 instanceof Maybe.Nothing ? null : arg2
-                    , arg3 instanceof Maybe.Just ? arg3.value0 : arg3 instanceof Maybe.Nothing ? null : arg3
+exports._call3 = function(justAndNothing, obj, method, arg1, arg2, arg3) {
+  return obj[method]( handleMaybe(justAndNothing, arg1)
+                    , handleMaybe(justAndNothing, arg2)
+                    , handleMaybe(justAndNothing, arg3)
                     );
 };
 
-exports._call4 = function(obj, method, arg1, arg2, arg3, arg4) {
-  return obj[method]( arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1
-                    , arg2 instanceof Maybe.Just ? arg2.value0 : arg2 instanceof Maybe.Nothing ? null : arg2
-                    , arg3 instanceof Maybe.Just ? arg3.value0 : arg3 instanceof Maybe.Nothing ? null : arg3
-                    , arg4 instanceof Maybe.Just ? arg4.value0 : arg4 instanceof Maybe.Nothing ? null : arg4
+exports._call4 = function(justAndNothing, obj, method, arg1, arg2, arg3, arg4) {
+  return obj[method]( handleMaybe(justAndNothing, arg1)
+                    , handleMaybe(justAndNothing, arg2)
+                    , handleMaybe(justAndNothing, arg3)
+                    , handleMaybe(justAndNothing, arg4)
                     );
 };
 
-exports._call5 = function(obj, method, arg1, arg2, arg3, arg4, arg5) {
-  return obj[method]( arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1
-                    , arg2 instanceof Maybe.Just ? arg2.value0 : arg2 instanceof Maybe.Nothing ? null : arg2
-                    , arg3 instanceof Maybe.Just ? arg3.value0 : arg3 instanceof Maybe.Nothing ? null : arg3
-                    , arg4 instanceof Maybe.Just ? arg4.value0 : arg4 instanceof Maybe.Nothing ? null : arg4
-                    , arg5 instanceof Maybe.Just ? arg5.value0 : arg5 instanceof Maybe.Nothing ? null : arg5
+exports._call5 = function(justAndNothing, obj, method, arg1, arg2, arg3, arg4, arg5) {
+  return obj[method]( handleMaybe(justAndNothing, arg1)
+                    , handleMaybe(justAndNothing, arg2)
+                    , handleMaybe(justAndNothing, arg3)
+                    , handleMaybe(justAndNothing, arg4)
+                    , handleMaybe(justAndNothing, arg5)
                     );
 };
 
-exports._call6 = function(obj, method, arg1, arg2, arg3, arg4, arg5, arg6) {
-  return obj[method]( arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1
-                    , arg2 instanceof Maybe.Just ? arg2.value0 : arg2 instanceof Maybe.Nothing ? null : arg2
-                    , arg3 instanceof Maybe.Just ? arg3.value0 : arg3 instanceof Maybe.Nothing ? null : arg3
-                    , arg4 instanceof Maybe.Just ? arg4.value0 : arg4 instanceof Maybe.Nothing ? null : arg4
-                    , arg5 instanceof Maybe.Just ? arg5.value0 : arg5 instanceof Maybe.Nothing ? null : arg5
-                    , arg6 instanceof Maybe.Just ? arg6.value0 : arg6 instanceof Maybe.Nothing ? null : arg6
+exports._call6 = function(justAndNothing, obj, method, arg1, arg2, arg3, arg4, arg5, arg6) {
+  return obj[method]( handleMaybe(justAndNothing, arg1)
+                    , handleMaybe(justAndNothing, arg2)
+                    , handleMaybe(justAndNothing, arg3)
+                    , handleMaybe(justAndNothing, arg4)
+                    , handleMaybe(justAndNothing, arg5)
+                    , handleMaybe(justAndNothing, arg6)
                     );
 };
 
-exports._call7 = function(obj, method, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
-  return obj[method]( arg1 instanceof Maybe.Just ? arg1.value0 : arg1 instanceof Maybe.Nothing ? null : arg1
-                    , arg2 instanceof Maybe.Just ? arg2.value0 : arg2 instanceof Maybe.Nothing ? null : arg2
-                    , arg3 instanceof Maybe.Just ? arg3.value0 : arg3 instanceof Maybe.Nothing ? null : arg3
-                    , arg4 instanceof Maybe.Just ? arg4.value0 : arg4 instanceof Maybe.Nothing ? null : arg4
-                    , arg5 instanceof Maybe.Just ? arg5.value0 : arg5 instanceof Maybe.Nothing ? null : arg5
-                    , arg6 instanceof Maybe.Just ? arg6.value0 : arg6 instanceof Maybe.Nothing ? null : arg6
-                    , arg7 instanceof Maybe.Just ? arg7.value0 : arg7 instanceof Maybe.Nothing ? null : arg7
+exports._call7 = function(justAndNothing, obj, method, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+  return obj[method]( handleMaybe(justAndNothing, arg1)
+                    , handleMaybe(justAndNothing, arg2)
+                    , handleMaybe(justAndNothing, arg3)
+                    , handleMaybe(justAndNothing, arg4)
+                    , handleMaybe(justAndNothing, arg5)
+                    , handleMaybe(justAndNothing, arg6)
+                    , handleMaybe(justAndNothing, arg7)
                     );
 };
 

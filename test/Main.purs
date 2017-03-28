@@ -119,6 +119,7 @@ streamConsumer = forever do
 streamProcess :: forall e. Stream -> Process (Aff (console :: CONSOLE, avar :: AVAR | e)) Unit
 streamProcess stream = (streamProducer stream) $$ (streamConsumer)
 
+-- TODO: Would be nice to test mkError & the handleMaybe functionality of at least one function...
 
 main :: forall e
       . Eff (fs :: FS, console :: CONSOLE, avar :: AVAR, buffer :: BUFFER, err :: EXCEPTION | e)
@@ -150,10 +151,10 @@ main = do
 
   -- | Launch the stream coroutine
   launchAff $ do
-    stream <- liftEff' $ createReadStream "/home/pureuser/src/bower.json"
+    stream <- liftEff' $ createReadStream "/Users/graeme/src/thirdparty/purescript-ffi-utils/bower.json"
     either (const $ pure unit) (\s -> runProcess (streamProcess s)) stream
 
   -- | Outputs the contents of bower.json to stdout
   launchAff $ do
-    contents <- readFile "/home/pureuser/src/bower.json"
+    contents <- readFile "/Users/graeme/src/thirdparty/purescript-ffi-utils/bower.json"
     AffLog.log contents

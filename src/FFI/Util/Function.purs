@@ -83,99 +83,107 @@ module FFI.Util.Function
   , listenToEff4
   ) where
 
-import Prelude (($), Unit, pure)
+import Prelude (($), Unit, pure, unit)
 import FFI.Util (isNullOrUndefined)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Control.Monad.Eff.Exception (Error)
 import Control.Monad.Aff (Aff, makeAff)
-import Data.Maybe (Maybe, maybe)
-import Data.Function.Eff ( EffFn2, EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9
-                         , runEffFn2, runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9
+import Data.Maybe (Maybe(..), maybe)
+import Data.Function.Eff ( EffFn3, EffFn4, EffFn5, EffFn6, EffFn7, EffFn8, EffFn9, EffFn10
+                         , runEffFn3, runEffFn4, runEffFn5, runEffFn6, runEffFn7, runEffFn8, runEffFn9, runEffFn10
                          , mkEffFn1, mkEffFn2, mkEffFn3, mkEffFn4
                          )
-import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9
-                               , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9
+import Data.Function.Uncurried ( Fn2, Fn3, Fn4, Fn5, Fn6, Fn7, Fn8, Fn9, Fn10
+                               , runFn2, runFn3, runFn4, runFn5, runFn6, runFn7, runFn8, runFn9, runFn10
                                , mkFn0, mkFn1, mkFn2, mkFn3, mkFn4, mkFn5 )
 
 
 type Method = String
 type Event = String
 
-foreign import mkError :: forall a. a -> Maybe Error
+foreign import _mkError :: forall a. Fn2 Maybes a (Maybe Error)
+
+mkError :: forall a. a -> Maybe Error
+mkError = runFn2 _mkError maybes
 
 foreign import apply :: forall f a b. f -> Array a -> b
 
 foreign import bind :: forall f g a. f -> a -> g
 infixl 6 bind as |.|
 
-foreign import _call0 :: forall o b. Fn2 o Method b
-foreign import _call1 :: forall o a1 b. Fn3 o Method a1 b
-foreign import _call2 :: forall o a1 a2 b. Fn4 o Method a1 a2 b
-foreign import _call3 :: forall o a1 a2 a3 b. Fn5 o Method a1 a2 a3 b
-foreign import _call4 :: forall o a1 a2 a3 a4 b. Fn6 o Method a1 a2 a3 a4 b
-foreign import _call5 :: forall o a1 a2 a3 a4 a5 b. Fn7 o Method a1 a2 a3 a4 a5 b
-foreign import _call6 :: forall o a1 a2 a3 a4 a5 a6 b. Fn8 o Method a1 a2 a3 a4 a5 a6 b
-foreign import _call7 :: forall o a1 a2 a3 a4 a5 a6 a7 b. Fn9 o Method a1 a2 a3 a4 a5 a6 a7 b
+type Maybes = Array (Maybe Unit)
+
+maybes :: Maybes
+maybes = [(pure unit), Nothing]
+
+foreign import _call0 :: forall o b. Fn3 Maybes o Method b
+foreign import _call1 :: forall o a1 b. Fn4 Maybes o Method a1 b
+foreign import _call2 :: forall o a1 a2 b. Fn5 Maybes o Method a1 a2 b
+foreign import _call3 :: forall o a1 a2 a3 b. Fn6 Maybes o Method a1 a2 a3 b
+foreign import _call4 :: forall o a1 a2 a3 a4 b. Fn7 Maybes o Method a1 a2 a3 a4 b
+foreign import _call5 :: forall o a1 a2 a3 a4 a5 b. Fn8 Maybes o Method a1 a2 a3 a4 a5 b
+foreign import _call6 :: forall o a1 a2 a3 a4 a5 a6 b. Fn9 Maybes o Method a1 a2 a3 a4 a5 a6 b
+foreign import _call7 :: forall o a1 a2 a3 a4 a5 a6 a7 b. Fn10 Maybes o Method a1 a2 a3 a4 a5 a6 a7 b
 
 call0 :: forall o b. o -> Method -> b
-call0 = runFn2 _call0
+call0 = runFn3 _call0 maybes
 
 call1 :: forall o a1 b. o -> Method -> a1 -> b
-call1 = runFn3 _call1
+call1 = runFn4 _call1 maybes
 
 call2 :: forall o a1 a2 b. o -> Method -> a1 -> a2 -> b
-call2 = runFn4 _call2
+call2 = runFn5 _call2 maybes
 
 call3 :: forall o a1 a2 a3 b. o -> Method -> a1 -> a2 -> a3 -> b
-call3 = runFn5 _call3
+call3 = runFn6 _call3 maybes
 
 call4 :: forall o a1 a2 a3 a4 b. o -> Method -> a1 -> a2 -> a3 -> a4 -> b
-call4 = runFn6 _call4
+call4 = runFn7 _call4 maybes
 
 call5 :: forall o a1 a2 a3 a4 a5 b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> b
-call5 = runFn7 _call5
+call5 = runFn8 _call5 maybes
 
 call6 :: forall o a1 a2 a3 a4 a5 a6 b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> b
-call6 = runFn8 _call6
+call6 = runFn9 _call6 maybes
 
 call7 :: forall o a1 a2 a3 a4 a5 a6 a7 b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> a7 -> b
-call7 = runFn9 _call7
+call7 = runFn10 _call7 maybes
 
 
 
-foreign import _callEff0 :: forall eff o b. EffFn2 eff o Method b
-foreign import _callEff1 :: forall eff o a1 b. EffFn3 eff o Method a1 b
-foreign import _callEff2 :: forall eff o a1 a2 b. EffFn4 eff o Method a1 a2 b
-foreign import _callEff3 :: forall eff o a1 a2 a3 b. EffFn5 eff o Method a1 a2 a3 b
-foreign import _callEff4 :: forall eff o a1 a2 a3 a4 b. EffFn6 eff o Method a1 a2 a3 a4 b
-foreign import _callEff5 :: forall eff o a1 a2 a3 a4 a5 b. EffFn7 eff o Method a1 a2 a3 a4 a5 b
-foreign import _callEff6 :: forall eff o a1 a2 a3 a4 a5 a6 b. EffFn8 eff o Method a1 a2 a3 a4 a5 a6 b
-foreign import _callEff7 :: forall eff o a1 a2 a3 a4 a5 a6 a7 b. EffFn9 eff o Method a1 a2 a3 a4 a5 a6 a7 b
+foreign import _callEff0 :: forall eff o b. EffFn3 eff Maybes o Method b
+foreign import _callEff1 :: forall eff o a1 b. EffFn4 eff Maybes o Method a1 b
+foreign import _callEff2 :: forall eff o a1 a2 b. EffFn5 eff Maybes o Method a1 a2 b
+foreign import _callEff3 :: forall eff o a1 a2 a3 b. EffFn6 eff Maybes o Method a1 a2 a3 b
+foreign import _callEff4 :: forall eff o a1 a2 a3 a4 b. EffFn7 eff Maybes o Method a1 a2 a3 a4 b
+foreign import _callEff5 :: forall eff o a1 a2 a3 a4 a5 b. EffFn8 eff Maybes o Method a1 a2 a3 a4 a5 b
+foreign import _callEff6 :: forall eff o a1 a2 a3 a4 a5 a6 b. EffFn9 eff Maybes o Method a1 a2 a3 a4 a5 a6 b
+foreign import _callEff7 :: forall eff o a1 a2 a3 a4 a5 a6 a7 b. EffFn10 eff Maybes o Method a1 a2 a3 a4 a5 a6 a7 b
 
 callEff0 :: forall o eff b. o -> Method -> Eff eff b
-callEff0 = runEffFn2 _callEff0
+callEff0 = runEffFn3 _callEff0 maybes
 
 callEff1 :: forall o a1 eff b. o -> Method -> a1 -> Eff eff b
-callEff1 = runEffFn3 _callEff1
+callEff1 = runEffFn4 _callEff1 maybes
 
 callEff2 :: forall o a1 a2 eff b. o -> Method -> a1 -> a2 -> Eff eff b
-callEff2 = runEffFn4 _callEff2
+callEff2 = runEffFn5 _callEff2 maybes
 
 callEff3 :: forall o a1 a2 a3 eff b. o -> Method -> a1 -> a2 -> a3 -> Eff eff b
-callEff3 = runEffFn5 _callEff3
+callEff3 = runEffFn6 _callEff3 maybes
 
 callEff4 :: forall o a1 a2 a3 a4 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> Eff eff b
-callEff4 = runEffFn6 _callEff4
+callEff4 = runEffFn7 _callEff4 maybes
 
 callEff5 :: forall o a1 a2 a3 a4 a5 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> Eff eff b
-callEff5 = runEffFn7 _callEff5
+callEff5 = runEffFn8 _callEff5 maybes
 
 callEff6 :: forall o a1 a2 a3 a4 a5 a6 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> Eff eff b
-callEff6 = runEffFn8 _callEff6
+callEff6 = runEffFn9 _callEff6 maybes
 
 callEff7 :: forall o a1 a2 a3 a4 a5 a6 a7 eff b. o -> Method -> a1 -> a2 -> a3 -> a4 -> a5 -> a6 -> a7 -> Eff eff b
-callEff7 = runEffFn9 _callEff7
+callEff7 = runEffFn10 _callEff7 maybes
 
 
 
